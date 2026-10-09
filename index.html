@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <body bgcolor="black" text="white">
+        Practical 2 - install docker and run first container</br>
+        docker run -d -p 8080:80 --name my-first-container nginx</br>
+        docker ps</br>
+        docker stop my-first-container</br>
+        docker start my-first-container</br>
+        docker ps -a</br></br>
+
+        Pratical 3 -create docker file and build image in docker app</br>
+        FROM nginx:lastest</br>
+        COPY index.html/usr/share/nginx/html/index.html</br>
+        EXPOSE 80</br>
+        docker build -t my-nginx-web</br>
+        docker images</br>
+        docker run -d --name my-nginx-container -p 8080:80 my-nginx-web</br>
+        docker ps</br>
+        docker stop my-nginx-container</br>
+        docker start my-nginx-container</br>
+        docker rm my-nginx-container</br>
+        docker rmi my-nginx-web</br></br>
+
+        Practical 4 - create and run nginx web server in docker app</br>
+        docker pull nginx</br>
+        docker images</br>
+        docker run -d --name my-nginx -p 8080:80 nginx</br>
+        docker ps</br>
+        docker logs my-nginx</br>
+        docker logs -f my-nginx</br>
+        docker stop my-nginx</br>
+        docker ps</br>
+        docker start my-nginx</br>
+        docker stop my-nginx</br>
+        docker rm my-nginx</br>
+        docker images</br>
+        docker run -d --name my-nginx -p 8080:80 -v C:\nginx-site:/usr/share/nginx/html:ro nginx</br></br>
+
+
+
+        docker --version
+        docker info
+        winget install Kubernetes.Minikube<br>
+        minikube version</br>
+        winget install Kubernetes.kubectl</br>
+        kubectl version --client</br>
+        minikube version --driver=docker</br>
+        minukube status</br>
+        minikube update-context</br>
+        minikube start</br>
+        kubectl get nodes</br>
+        kubectl create deployment nginx --image=nginx</br>
+        kubectl get deployments</br>
+        kubectl get pods</br>
+        kubectl expose deployment nginx --type=NodePort --port=80</br>
+        kubectl get services</br>
+        kubectl scale deployment nginx --replicas=3</br>
+        kubectl get pods</br>
+        kubectl scale deployment nginx --replicas=2</br>
+        kubectl get pods</br>
+        kubectl get all</br>
+        kubectl describe deployment nginx</br>
+        kubectl describe pod nginx_id</br>
+        kubectl log pod_name</br>
+        kubectl delete pod_name</br>
+        kubectl get deployment nginx -o wide</br>
+        kubectl set image deployment/nginx nginx=nginx:stable</br>
+        kubectl rollout status deployment/nginx</br>
+        minikube dashboard</br>
+        kubectl delete service nginx</br>
+        kubectl delete deployment nginx</br>
+        kubectl get all</br>
+        minikube stop</br>
+        minikube delete</br></br>
+
+        upload.py</br>
+        from google_auth_oauthlib.flow import InstalledAppFlow</br>
+from googleapiclient.discovery import build</br>
+from googleapiclient.http import MediaFileUpload</br>
+import os</br>
+SCOPES = ["https://www.googleapis.com/auth/drive.file"]</br>
+flow = InstalledAppFlow.from_client_secrets_file(</br>
+&nbsp;&nbsp;&nbsp;&nbsp;"credentials.json",</br>
+&nbsp;&nbsp;&nbsp;&nbsp;SCOPES</br>
+)</br>
+creds = flow.run_local_server(port=0)</br>
+service = build("drive", "v3", credentials=creds)</br>
+file_metadata = {</br>
+&nbsp;&nbsp;&nbsp;&nbsp;"name": "sample.txt"</br>
+}</br>
+media = MediaFileUpload(</br>
+&nbsp;&nbsp;&nbsp;&nbsp;"sample.txt",</br>
+&nbsp;&nbsp;&nbsp;&nbsp;resumable=True</br>
+)</br>
+file = service.files().create(</br>
+&nbsp;&nbsp;&nbsp;&nbsp;body=file_metadata,</br>
+&nbsp;&nbsp;&nbsp;&nbsp;media_body=media,</br>
+&nbsp;&nbsp;&nbsp;&nbsp;fields="id"</br>
+).execute()</br>
+print("File uploaded successfully")</br>
+print("File ID:", file.get("id"))</br></br>
+
+list_files.py</br>
+from google.oauth2.credentials import Credentials</br>
+from googleapiclient.discovery import build</br>
+from google_auth_oauthlib.flow import InstalledAppFlow</br>
+
+SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"]</br>
+
+flow = InstalledAppFlow.from_client_secrets_file(</br>
+&nbsp;&nbsp;&nbsp;&nbsp;"credentials.json",</br>
+&nbsp;&nbsp;&nbsp;&nbsp;SCOPES</br>
+)</br>
+
+creds = flow.run_local_server(port=0)</br>
+
+service = build("drive", "v3", credentials=creds)</br>
+
+results = service.files().list(</br>
+&nbsp;&nbsp;&nbsp;&nbsp;pageSize=10,</br>
+&nbsp;&nbsp;&nbsp;&nbsp;fields="files(id, name)"</br>
+).execute()</br>
+
+items = results.get("files", [])</br>
+
+for item in items:</br>
+&nbsp;&nbsp;&nbsp;&nbsp;print(item["name"], item["id"])</br></br>
+
+download.py</br>
+from googleapiclient.discovery import build</br>
+from googleapiclient.http import MediaIoBaseDownload</br>
+from google_auth_oauthlib.flow import InstalledAppFlow</br>
+import io</br>
+
+SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]</br>
+
+flow = InstalledAppFlow.from_client_secrets_file(</br>
+&nbsp;&nbsp;&nbsp;&nbsp;"credentials.json",</br>
+&nbsp;&nbsp;&nbsp;&nbsp;SCOPES</br>
+)</br>
+
+creds = flow.run_local_server(port=0)</br>
+
+service = build("drive", "v3", credentials=creds)</br>
+
+file_id = "YOUR_FILE_ID"</br>
+
+request = service.files().get_media(fileId=file_id)</br>
+
+fh = io.FileIO("downloaded.txt", "wb")</br>
+
+downloader = MediaIoBaseDownload(fh, request)</br>
+
+done = False</br>
+
+while not done:</br>
+&nbsp;&nbsp;&nbsp;&nbsp;status, done = downloader.next_chunk()</br>
+
+print("Download completed")</br></br>
+
+
+{ </br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Version": "2012-10-17", </br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Statement": [ </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ </br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Sid": "PublicRead", </br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Effect": "Allow", </br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Principal": "*", </br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Action": "s3:GetObject", </br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Resource": "arn:aws:s3:::YOUR-BUCKET-NAME/*" </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} </br>
+&nbsp;&nbsp;&nbsp;&nbsp;] </br>
+} </br>
+
+
+
+    </body>
+</html>
